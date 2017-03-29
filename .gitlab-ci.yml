@@ -1,0 +1,8 @@
+image: registry.gitlab.com/tvaughan/docker-terraform:latest
+
+services:
+  - docker:dind
+
+lint:
+  script:
+    - make lint

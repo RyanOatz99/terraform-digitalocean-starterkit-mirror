@@ -1,0 +1,18 @@
+# -*- coding: utf-8; mode: terraform -*-
+
+variable "starterkit_domain" {
+  # This must not have a default.
+}
+
+variable "starterkit_ssh_pubkey" {
+  # This must not have a default.
+}
+
+variable "starterkit_droplet" {
+  default = {
+    image  = "coreos-stable"
+    name   = "starterkit"
+    region = "sfo1"
+    size   = "512mb"
+  }
+}
