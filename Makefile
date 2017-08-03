@@ -2,7 +2,7 @@
 
 SHELL = bash
 
-.PHONY: .sshrc all check-variables-defined create destroy format is-defined-% lint show-outputs ssh-% ssh-add-keys
+.PHONY: .sshrc all check-variables-defined create destroy format init is-defined-% lint show-outputs ssh-% ssh-add-keys upgrade
 
 all: lint create
 
@@ -11,7 +11,13 @@ is-defined-%:
 
 check-variables-defined: is-defined-DIGITALOCEAN_TOKEN is-defined-STARTERKIT_DOMAIN is-defined-STARTERKIT_DROPLET_SSH_PUBKEY
 
-create: check-variables-defined
+init: check-variables-defined
+	@terraform init
+
+upgrade: check-variables-defined
+	@terraform init -upgrade
+
+create: lint
 	@terraform plan -out=terraform.plan					\
 	    -var=digitalocean_token="$(DIGITALOCEAN_TOKEN)"			\
 	    -var=starterkit_domain="$(STARTERKIT_DOMAIN)"			\
@@ -20,7 +26,7 @@ create: check-variables-defined
 	@bash --init-file .helpers.sh -i -c 'unless_yes "Apply this plan?"'
 	@terraform apply terraform.plan
 
-destroy: check-variables-defined
+destroy: lint
 	@terraform destroy							\
 	    -var=digitalocean_token="$(DIGITALOCEAN_TOKEN)"			\
 	    -var=starterkit_domain="$(STARTERKIT_DOMAIN)"			\
@@ -30,8 +36,12 @@ destroy: check-variables-defined
 format:
 	@terraform fmt
 
-lint:
-	@terraform validate
+lint: init
+	@terraform validate							\
+	    -var=digitalocean_token="$(DIGITALOCEAN_TOKEN)"			\
+	    -var=starterkit_domain="$(STARTERKIT_DOMAIN)"			\
+	    -var=starterkit_ssh_pubkey="$(STARTERKIT_DROPLET_SSH_PUBKEY)"	\
+	    .
 
 show-outputs:
 	@terraform output
