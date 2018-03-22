@@ -13,6 +13,6 @@ variable "starterkit_droplet" {
     image  = "coreos-stable"
     name   = "starterkit"
     region = "sfo1"
-    size   = "512mb"
+    size   = "s-1vcpu-1gb"
   }
 }
