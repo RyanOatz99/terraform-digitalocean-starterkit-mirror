@@ -9,4 +9,5 @@ resource "digitalocean_record" "starterkit_record_www" {
   domain = "${digitalocean_domain.starterkit_domain.name}"
   name   = "www"
   type   = "CNAME"
+  value  = "@"
 }
